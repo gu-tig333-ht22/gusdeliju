@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'AddItemView.dart';
+import 'package:provider/provider.dart';
+import 'checkbox.dart';
 
 void main() {
-  runApp(const MyApp());
+  var state = MyState();
+
+  runApp(
+    ChangeNotifierProvider(create: (context) => state, child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      home: const MyHomePage(title: 'TIG333 TODO'),
+      home: const MyHomePage(title: 'TO DO LIST'),
     );
   }
 }
@@ -30,74 +37,60 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        children: [
-          _checkboxRow(),
-          _checkboxRow(),
-          _checkboxRow(),
-          _checkboxRow(),
-          TextButton(
-              child: const Text(
-                'Klar',
-              ),
+        title: Center(child: Text(widget.title)),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.arrow_right),
               onPressed: () {
-                debugPrint('Button #1 is clicked!');
+                //Navigator.push(context,
+                //   MaterialPageRoute(builder: (context) => SecondView()));
               }),
         ],
+      ),
+      body: Consumer<MyState>(
+        builder: (context, state, child) => ListOfTodos(state.list),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          var newItem = await Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddItemView()));
+          Provider.of<MyState>(context, listen: false).addItems(newItem);
+        },
       ),
     );
   }
 }
 
-/*Widget _square() {
-  return Container(
-    width: 100,
-    height: 100,
-    margin: const EdgeInsets.all(10),
-    decoration:
-        BoxDecoration(color: Colors.indigo, border: Border.all(width: 3)),
-  );
+class Items {
+  String message;
+
+  Items({required this.message});
 }
 
-TextField(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: 'Enter a search term',
-        ),
-      ),
+class ListOfTodos extends StatelessWidget {
+  final List<Items> list;
+  ListOfTodos(this.list);
 
-Container(
-        margin: const EdgeInsets.only(left: 10, right: 10),
-        child:
-            TextField(decoration: InputDecoration(hintText: 'Need to be done')),*/
+  Widget build(BuildContext context) {
+    return ListView(children: list.map((sak) => _todo(context, sak)).toList());
+  }
 
-Widget _checkboxRow() {
-  return Row(
-    children: [
-      Checkbox(value: false, onChanged: (val) {}),
-      const Text('Needs to be Done'),
-      IconButton(
-        icon: const Icon(Icons.close),
-        onPressed: () {},
-      ),
-    ],
-  );
+  Widget _todo(context, sak) {
+    return ListTile(
+        leading: MyStatefulWidget(),
+        title: Text(sak.message),
+        trailing: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              var state = Provider.of<MyState>(context, listen: false);
+              state.removeItem(sak);
+            }));
+  }
 }
-
-/*Widget _addButton () {
-  return Container(
-    child: TextButton(
-          child: const Text(
-            'Klar',
-          ),
-          onPressed: () {
-            debugPrint('Button #1 is clicked!');
-          }) ,
-  );
-}*/

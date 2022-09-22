@@ -1,6 +1,7 @@
-import 'dart:js';
+//import 'dart:js';
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'package:http/http.dart' as http;
 
 class AddItemView extends StatelessWidget {
 //  AddItemView();
@@ -22,6 +23,7 @@ class AddItemView extends StatelessWidget {
             icon: Icon(Icons.save, size: 24.0),
             label: Text('SAVE'), // <-- Text
           ),
+          _content(),
         ],
       ),
     );
@@ -40,6 +42,26 @@ class AddItemView extends StatelessWidget {
       ),
     );
   }
+
+  Widget _content() {
+    return ElevatedButton(
+      child: Text('Hej'),
+      onPressed: () {
+        _dostuff();
+      },
+    );
+  }
+
+  void _dostuff() async {
+    var result = await _fetchstuffFromInternet();
+    print(result);
+  }
+
+  Future<String> _fetchstuffFromInternet() async {
+    http.Response response = await http.get(Uri.parse(
+        'https://todoapp-api.apps.k8s.gu.se/todos?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'));
+    return response.body;
+  }
 }
 
 /*Widget _AddTextButton() {
@@ -57,8 +79,9 @@ class AddItemView extends StatelessWidget {
 
 class MyState extends ChangeNotifier {
   List<Items> _list = [Items(message: 'jhgjh')];
+  String _filterBy = 'all';
   List<Items> get list => _list;
-  bool _isChecked = false;
+  String get filterBy => _filterBy;
 
   void addItems(Items items) {
     _list.add(items);
@@ -67,6 +90,16 @@ class MyState extends ChangeNotifier {
 
   void removeItem(Items items) {
     _list.remove(items);
+    notifyListeners();
+  }
+
+  void checkItem(item) {
+    item.done = !item.done;
+    notifyListeners();
+  }
+
+  void setFilterBy(filterBy) {
+    _filterBy = filterBy;
     notifyListeners();
   }
 }

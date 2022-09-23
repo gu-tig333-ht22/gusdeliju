@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'api.dart';
 
 class AddItemView extends StatelessWidget {
 //  AddItemView();
@@ -23,7 +25,6 @@ class AddItemView extends StatelessWidget {
             icon: Icon(Icons.save, size: 24.0),
             label: Text('SAVE'), // <-- Text
           ),
-          _content(),
         ],
       ),
     );
@@ -42,9 +43,10 @@ class AddItemView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _content() {
-    return ElevatedButton(
+/*Widget _content() {
+  return ElevatedButton(
       child: Text('Hej'),
       onPressed: () {
         _dostuff();
@@ -64,7 +66,7 @@ class AddItemView extends StatelessWidget {
   }
 }
 
-/*Widget _AddTextButton() {
+Widget _AddTextButton() {
   return Container(
     child: ElevatedButton.icon(
       onPressed: () {
@@ -83,8 +85,8 @@ class MyState extends ChangeNotifier {
   List<Items> get list => _list;
   String get filterBy => _filterBy;
 
-  void addItems(Items items) {
-    _list.add(items);
+  void addItems(Items items) async {
+    _list = await Api.addItems(items);
     notifyListeners();
   }
 

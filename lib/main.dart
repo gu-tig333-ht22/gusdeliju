@@ -74,22 +74,22 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class Items {
+  String id;
   String message;
-  bool done = false;
+  bool done;
 
-  Items({
-    required this.message,
-  });
-
+  Items({required this.message, this.done = false, this.id = ''});
 
   static Map<String, dynamic> toJson(Items items) {
     return {
-      "title": "Must pack bags",
-  "done": false
-    }
+      'title': items.message,
+      'done': items.done,
+    };
   }
 
-
+  static Items fromJson(dynamic items) {
+    return Items(message: items['title'], done: items['done'], id: items['id']);
+  }
 }
 
 class ListOfTodos extends StatelessWidget {

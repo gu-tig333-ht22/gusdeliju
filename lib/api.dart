@@ -12,18 +12,35 @@ import 'main.dart';
 
 class Api {
   static Future<List<Items>> addItems(Items items) async {
-    Map<String, dynamic> json = items.toJson();
+    Map<String, dynamic> json = Items.toJson(items);
     var bodyString = jsonEncode(json);
     var response = await http.post(
-      'https://todoapp-api.apps.k8s.gu.se/todos?key=4332f801-310e-4e3e-88c3-d179d6fdfba4',
+      Uri.parse(
+          'https://todoapp-api.apps.k8s.gu.se/todos?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'),
       body: bodyString,
       headers: {'Content-Type': 'application/json'},
     );
     bodyString = response.body;
-    var list = jsonDecode(bodyString);
-
-    return list.map<Items>((data) {
-      return Items.fromJson(data);
-    }).toList();
+    List<dynamic> listFromApi = jsonDecode(bodyString);
+    return listFromApi.map((x) => Items.fromJson(x)).toList();
   }
+
+  static Future removeItem(id) async {
+    http.Response response = await http.delete(
+        Uri.parse(
+            'https://todoapp-api.apps.k8s.gu.se/todos/:$id?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'),
+        headers: {'Content-Type': 'application/json'});
+    return null;
+  }
+
+  //https://todoapp-api.apps.k8s.gu.se//todos/:id?key=4332f801-310e-4e3e-88c3-d179d6fdfba4
+
+  // newList.map((item) => Items.fromJson(item)).toList();
+
+  //static Future<List<Items>> checkItems(Items items) async {
+  // items.done = !items.done;
+
+  // return
+  //}
+
 }

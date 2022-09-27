@@ -18,9 +18,11 @@ class AddItemView extends StatelessWidget {
       body: Column(
         children: [
           _TextField(),
+          _content(),
           ElevatedButton.icon(
             onPressed: () {
-              Navigator.pop(context, Items(message: controller.text));
+              Navigator.pop(
+                  context, Items(message: controller.text, done: false));
             },
             icon: Icon(Icons.save, size: 24.0),
             label: Text('SAVE'), // <-- Text
@@ -45,28 +47,27 @@ class AddItemView extends StatelessWidget {
   }
 }
 
-/*Widget _content() {
+Widget _content() {
   return ElevatedButton(
-      child: Text('Hej'),
-      onPressed: () {
-        _dostuff();
-      },
-    );
-  }
-
-  void _dostuff() async {
-    var result = await _fetchstuffFromInternet();
-    print(result);
-  }
-
-  Future<String> _fetchstuffFromInternet() async {
-    http.Response response = await http.get(Uri.parse(
-        'https://todoapp-api.apps.k8s.gu.se/todos?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'));
-    return response.body;
-  }
+    child: Text('Hej'),
+    onPressed: () {
+      _dostuff();
+    },
+  );
 }
 
-Widget _AddTextButton() {
+void _dostuff() async {
+  var result = await _fetchstuffFromInternet();
+  print(result);
+}
+
+Future<String> _fetchstuffFromInternet() async {
+  http.Response response = await http.get(Uri.parse(
+      'https://todoapp-api.apps.k8s.gu.se/todos?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'));
+  return response.body;
+}
+
+/*Widget _AddTextButton() {
   return Container(
     child: ElevatedButton.icon(
       onPressed: () {
@@ -90,7 +91,8 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeItem(Items items) {
+  void removeItem(items) {
+    Api.removeItem(items.id);
     _list.remove(items);
     notifyListeners();
   }

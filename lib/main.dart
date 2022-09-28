@@ -66,7 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           var newItem = await Navigator.push(
               context, MaterialPageRoute(builder: (context) => AddItemView()));
-          Provider.of<MyState>(context, listen: false).addItems(newItem);
+          if (newItem != null) {
+            Provider.of<MyState>(context, listen: false).addItems(newItem);
+          }
         },
       ),
     );

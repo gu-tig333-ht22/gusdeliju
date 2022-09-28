@@ -81,7 +81,7 @@ Future<String> _fetchstuffFromInternet() async {
 }*/
 
 class MyState extends ChangeNotifier {
-  List<Items> _list = [Items(message: 'jhgjh')];
+  List<Items> _list = [];
   String _filterBy = 'all';
   List<Items> get list => _list;
   String get filterBy => _filterBy;
@@ -91,14 +91,14 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeItem(items) {
-    Api.removeItem(items.id);
-    _list.remove(items);
+  void removeItem(item) async {
+    _list = await Api.removeItem(item.id);
     notifyListeners();
   }
 
-  void checkItem(item) {
-    item.done = !item.done;
+  void checkItem(item) async {
+    _list = await Api.checkItem(item);
+    //item.done = !item.done;
     notifyListeners();
   }
 

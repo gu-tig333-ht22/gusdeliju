@@ -25,13 +25,28 @@ class Api {
     return listFromApi.map((x) => Items.fromJson(x)).toList();
   }
 
-  static Future removeItem(id) async {
-    http.Response response = await http.delete(
+  static Future<List<Items>> removeItem(id) async {
+    final http.Response response = await http.delete(
         Uri.parse(
-            'https://todoapp-api.apps.k8s.gu.se/todos/:$id?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'),
+            'https://todoapp-api.apps.k8s.gu.se/todos/$id?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'),
         headers: {'Content-Type': 'application/json'});
-    return null;
+
+    List<dynamic> listFromApi = jsonDecode(response.body);
+    return listFromApi.map((x) => Items.fromJson(x)).toList();
   }
+
+  static Future<List<Items>> checkItem(item) async {
+    String id = item.id;
+    final http.Response response = await http.put(
+        Uri.parse(
+            'https://todoapp-api.apps.k8s.gu.se/todos/$id?key=4332f801-310e-4e3e-88c3-d179d6fdfba4'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'title': item.message, 'done': !item.done}));
+
+    List<dynamic> listFromApi = jsonDecode(response.body);
+    return listFromApi.map((x) => Items.fromJson(x)).toList();
+  }
+}
 
   //https://todoapp-api.apps.k8s.gu.se//todos/:id?key=4332f801-310e-4e3e-88c3-d179d6fdfba4
 
@@ -42,5 +57,3 @@ class Api {
 
   // return
   //}
-
-}

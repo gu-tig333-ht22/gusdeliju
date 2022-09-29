@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'AddItemView.dart';
 import 'package:provider/provider.dart';
-import 'checkbox.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'api.dart';
 
 void main() {
   var state = MyState();
+  state.fetchTodos();
   runApp(
     ChangeNotifierProvider(create: (context) => state, child: const MyApp()),
   );

@@ -1,6 +1,9 @@
-import 'dart:js';
+//import 'dart:js';
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'api.dart';
 
 class AddItemView extends StatelessWidget {
 //  AddItemView();
@@ -17,7 +20,8 @@ class AddItemView extends StatelessWidget {
           _TextField(),
           ElevatedButton.icon(
             onPressed: () {
-              Navigator.pop(context, Items(message: controller.text));
+              Navigator.pop(
+                  context, Items(message: controller.text, done: false));
             },
             icon: Icon(Icons.save, size: 24.0),
             label: Text('SAVE'), // <-- Text
@@ -42,31 +46,37 @@ class AddItemView extends StatelessWidget {
   }
 }
 
-/*Widget _AddTextButton() {
-  return Container(
-    child: ElevatedButton.icon(
-      onPressed: () {
-        Navigator.pop(context,
-        Items(message: message))
-      },
-      icon: Icon(Icons.save, size: 24.0),
-      label: Text('SAVE'), // <-- Text
-    ),
-  );
-}*/
-
 class MyState extends ChangeNotifier {
-  List<Items> _list = [Items(message: 'jhgjh')];
-  List<Items> get list => _list;
-  bool _isChecked = false;
+  List<Items> _list = [];
 
-  void addItems(Items items) {
-    _list.add(items);
+  String _filterBy = 'all';
+  List<Items> get list => _list;
+  String get filterBy => _filterBy;
+
+  void addItems(Items items) async {
+    _list = await Api.addItems(items);
     notifyListeners();
   }
 
-  void removeItem(Items items) {
-    _list.remove(items);
+  void removeItem(item) async {
+    _list = await Api.removeItem(item.id);
     notifyListeners();
+  }
+
+  void checkItem(item) async {
+    _list = await Api.checkItem(item);
+    //item.done = !item.done;
+    notifyListeners();
+  }
+
+  void setFilterBy(filterBy) {
+    _filterBy = filterBy;
+    notifyListeners();
+  }
+
+  void fetchTodos() async {
+    _list = await Api.fetchTodos();
+    notifyListeners();
+    print(_list);
   }
 }
